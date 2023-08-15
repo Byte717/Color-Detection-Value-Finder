@@ -1,9 +1,6 @@
 import cv2
-import numpy
 import os
-import matplotlib.pyplot as plt
 import argparse
-from typing import *
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import messagebox
@@ -18,22 +15,28 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+exit = False
 
 class Window(tk.Tk):
-    def __init__(self, imageDir:str = None) -> None:
+    def __init__(self, imageDir:str = None,webcam: bool = False) -> None:
         super().__init__()
+        self.webcam = webcam
         self.Font_tuple = ("Comic Sans MS", 20, "bold")
         self.Font_tuple2 = ("Comic Sans MS", 10, "bold")
         self.title("RGB Value Tester")
         self.config(bg="gray19")
         self.protocol("WM_DELETE_WINDOW",self.onClose)
         # self.geometry("1920x1080")
-        if imageDir is None:
-            print("Image Not provided in arguments")
+        if imageDir is None and webcam == False:
+            print("Source not provided in arguments")
             raise
+        elif webcam:
+            self.cam = cv2.VideoCapture(0)
+            self.img = self.cam.read()
+
         elif os.path.exists(imageDir) == False:
             print(bcolors.FAIL + bcolors.UNDERLINE + "INVALID PATH" + bcolors.ENDC)
-            raise
+            exit()
         else:
             self.dir = imageDir
             if os.path.isfile(imageDir):
@@ -153,9 +156,11 @@ class Window(tk.Tk):
 
 
     def onClose(self):
+        global exit
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             print(f"Lower values BGR: {self.low()}")
             print(f"Higher values BGR: {self.high()}")
+            exit = True
             self.destroy()
 
     def low(self) -> tuple:
@@ -168,11 +173,16 @@ class Window(tk.Tk):
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("-dir", "--dir", help="Show Output")
+    parser.add_argument("-dir", "--dir", help="Use images")
+    parser.add_argument("-webcam","--webcam",help="Use webcam",action="store_true")
     args = parser.parse_args()
-    print(args.dir)
-    window = Window(args.dir)
-    window.mainloop()
+    window = Window(args.dir,args.webcam)
+
+    while not exit:
+        if window.webcam:
+            window.img = window.cam.read()
+        window.update_idletasks()
+        window.update()
     return 0
 
 
