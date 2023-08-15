@@ -27,39 +27,42 @@ class Window(tk.Tk):
             raise
         else:
             self.dir = imageDir
+            self.img = cv2.imread(self.dir,1)
 
         self.l1 = tk.Label(self,text="Low Red Value", fg='Red')
         self.l1.pack()
-        self.LowRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL)
+        self.LowRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
         self.LowRed.pack()
 
         self.l2 = tk.Label(self, text="High Red Value",fg='Red')
         self.l2.pack()
-        self.HighRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL)
+        self.HighRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
         self.HighRed.pack()
 
         self.l3 = tk.Label(self, text="Low Blue Value",fg='Blue')
         self.l3.pack()
-        self.LowBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL)
+        self.LowBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
         self.LowBlue.pack()
 
 
         self.l4 = tk.Label(self, text="High Blue Value",fg='Blue')
         self.l4.pack()
-        self.HighBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL)
+        self.HighBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
         self.HighBlue.pack()
 
         self.l5 = tk.Label(self, text="Low Green Value",fg='Green')
         self.l5.pack()
-        self.LowGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL)
+        self.LowGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
         self.LowGreen.pack()
 
         self.l6 = tk.Label(self, text="High Green Value",fg='Green')
         self.l6.pack()
-        self.HighGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL)
+        self.HighGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
         self.HighGreen.pack()
 
     def callback(self):
+        lower, higher  = self.low(), self.high()
+
         pass
 
     def low(self) -> tuple:
