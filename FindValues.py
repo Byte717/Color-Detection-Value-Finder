@@ -6,6 +6,7 @@ import argparse
 from typing import *
 import tkinter as tk
 from PIL import Image, ImageTk
+from tkinter import messagebox
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -21,15 +22,36 @@ class bcolors:
 class Window(tk.Tk):
     def __init__(self, imageDir:str = None) -> None:
         super().__init__()
+        self.Font_tuple = ("Comic Sans MS", 20, "bold")
+        self.Font_tuple2 = ("Comic Sans MS", 10, "bold")
         self.title("RGB Value Tester")
         self.config(bg="gray19")
+        self.protocol("WM_DELETE_WINDOW",self.onClose)
+        # self.geometry("1920x1080")
         if imageDir is None:
             print("Image Not provided in arguments")
             raise
+        elif os.path.exists(imageDir) == False:
+            print(bcolors.FAIL + bcolors.UNDERLINE + "INVALID PATH" + bcolors.ENDC)
+            raise
         else:
             self.dir = imageDir
-            self.img = cv2.imread(self.dir)
-            # cv2.imshow("DHJK",self.img)
+            if os.path.isfile(imageDir):
+                self.img = cv2.imread(self.dir)
+
+            elif os.path.isdir(imageDir):
+                self.imageIndex = 0
+                self.paths = list(os.listdir(imageDir))
+                self.n = len(self.paths)
+
+
+                self.imageLabel = tk.Label(self,text=os.path.join(self.dir,self.paths[self.imageIndex]), bg="gray25",fg="White",font=self.Font_tuple)
+                self.imageLabel.pack(side=tk.TOP)
+
+                self.keyboardSetup()
+                self.MultipleInit()
+                self.img = cv2.imread(os.path.join(self.dir,self.paths[self.imageIndex]))
+
 
         imgtk = self.parse_image(self.img)
         self.original = tk.Label(self,image=imgtk)
@@ -41,40 +63,80 @@ class Window(tk.Tk):
         self.display.pack(side=tk.TOP)
 
 
-        self.l1 = tk.Label(self,text="Low Red Value", fg='Red',bg="gray19")
+        self.l1 = tk.Label(self,text="Low Red Value", fg='Red',bg="gray19",font=self.Font_tuple2)
         self.l1.pack()
-        self.LowRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
+        self.LowRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
         self.LowRed.pack()
 
-        self.l2 = tk.Label(self, text="High Red Value",fg='Red',bg="gray19")
+        self.l2 = tk.Label(self, text="High Red Value",fg='Red',bg="gray19",font=self.Font_tuple2)
         self.l2.pack()
-        self.HighRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
+        self.HighRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
         self.HighRed.set(255)
         self.HighRed.pack()
 
-        self.l3 = tk.Label(self, text="Low Blue Value",fg='Blue',bg="gray19")
+        self.l3 = tk.Label(self, text="Low Blue Value",fg='DodgerBlue',bg="gray19",font=self.Font_tuple2)
         self.l3.pack()
-        self.LowBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
+        self.LowBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
         self.LowBlue.pack()
 
 
-        self.l4 = tk.Label(self, text="High Blue Value",fg='Blue',bg="gray19")
+        self.l4 = tk.Label(self, text="High Blue Value",fg='DodgerBlue',bg="gray19",font=self.Font_tuple2)
         self.l4.pack()
-        self.HighBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
+        self.HighBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
         self.HighBlue.set(255)
         self.HighBlue.pack()
 
-        self.l5 = tk.Label(self, text="Low Green Value",fg='Green',bg="gray19")
+        self.l5 = tk.Label(self, text="Low Green Value",fg='lawn green',bg="gray19",font=self.Font_tuple2)
         self.l5.pack()
-        self.LowGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
+        self.LowGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
         self.LowGreen.pack()
 
-        self.l6 = tk.Label(self, text="High Green Value",fg='Green',bg="gray19")
+        self.l6 = tk.Label(self, text="High Green Value",fg='lawn Green',bg="gray19",font=self.Font_tuple2)
         self.l6.pack()
-        self.HighGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
+        self.HighGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
         self.HighGreen.set(255)
         self.HighGreen.pack()
 
+
+    def keyboardSetup(self):
+        self.bind('<Left>', self.leftPress)
+        self.bind('<Right>',self.rightPress)
+
+    def MultipleInit(self) -> None:
+        self.leftButton = tk.Button(self, text="<-", width=10,height=5, bg="gray20",fg="White",command=self.leftPress)
+        self.leftButton.pack(side=tk.LEFT)
+
+        self.rightButton = tk.Button(self, text="->", width=10, height=5, bg="gray20", fg="White",command=self.rightPress)
+        self.rightButton.pack(side=tk.RIGHT)
+        pass
+
+    def changeImage(self, path = None):
+        if path is None:
+            print("NO PATH PROVIDED")
+            raise
+        else:
+            self.imageLabel.config(text=path)
+            self.img = cv2.imread(path)
+            parsed = self.parse_image(self.img)
+            self.original.configure(image=parsed)
+            self.original.image = parsed
+            self.callback()
+
+
+    def leftPress(self,event=None):
+        if self.imageIndex == 0:
+            return
+        else:
+            self.imageIndex -= 1
+            self.changeImage(os.path.join(self.dir, self.paths[self.imageIndex]))
+
+
+    def rightPress(self, event=None):
+        if self.imageIndex + 1 == self.n:
+            return
+        else:
+            self.imageIndex += 1
+            self.changeImage(os.path.join(self.dir, self.paths[self.imageIndex]))
     def parse_image(self,img) -> ImageTk.PhotoImage:
         img2 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         im = Image.fromarray(img2)
@@ -88,6 +150,13 @@ class Window(tk.Tk):
         self.display.configure(image=imgtk)
         self.display.image = imgtk
         pass
+
+
+    def onClose(self):
+        if messagebox.askokcancel("Quit", "Do you want to quit?"):
+            print(f"Lower values BGR: {self.low()}")
+            print(f"Higher values BGR: {self.high()}")
+            self.destroy()
 
     def low(self) -> tuple:
         return (self.LowBlue.get(), self.LowGreen.get(), self.LowRed.get())
