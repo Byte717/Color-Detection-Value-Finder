@@ -19,63 +19,74 @@ class bcolors:
 
 
 class Window(tk.Tk):
-    def __init__(self, imageDir:str = None):
+    def __init__(self, imageDir:str = None) -> None:
         super().__init__()
         self.title("RGB Value Tester")
+        self.config(bg="gray19")
         if imageDir is None:
             print("Image Not provided in arguments")
             raise
         else:
             self.dir = imageDir
             self.img = cv2.imread(self.dir)
-            cv2.imshow("DHJK",self.img)
+            # cv2.imshow("DHJK",self.img)
 
         imgtk = self.parse_image(self.img)
+        self.original = tk.Label(self,image=imgtk)
+        self.original.image = imgtk
+        self.original.pack()
+
         self.display = tk.Label(self, image=imgtk)
         self.display.image = imgtk
         self.display.pack(side=tk.TOP)
 
 
-        self.l1 = tk.Label(self,text="Low Red Value", fg='Red')
+        self.l1 = tk.Label(self,text="Low Red Value", fg='Red',bg="gray19")
         self.l1.pack()
-        self.LowRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
+        self.LowRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
         self.LowRed.pack()
 
-        self.l2 = tk.Label(self, text="High Red Value",fg='Red')
+        self.l2 = tk.Label(self, text="High Red Value",fg='Red',bg="gray19")
         self.l2.pack()
-        self.HighRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
+        self.HighRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
+        self.HighRed.set(255)
         self.HighRed.pack()
 
-        self.l3 = tk.Label(self, text="Low Blue Value",fg='Blue')
+        self.l3 = tk.Label(self, text="Low Blue Value",fg='Blue',bg="gray19")
         self.l3.pack()
-        self.LowBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
+        self.LowBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
         self.LowBlue.pack()
 
 
-        self.l4 = tk.Label(self, text="High Blue Value",fg='Blue')
+        self.l4 = tk.Label(self, text="High Blue Value",fg='Blue',bg="gray19")
         self.l4.pack()
-        self.HighBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
+        self.HighBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
+        self.HighBlue.set(255)
         self.HighBlue.pack()
 
-        self.l5 = tk.Label(self, text="Low Green Value",fg='Green')
+        self.l5 = tk.Label(self, text="Low Green Value",fg='Green',bg="gray19")
         self.l5.pack()
-        self.LowGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
+        self.LowGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
         self.LowGreen.pack()
 
-        self.l6 = tk.Label(self, text="High Green Value",fg='Green')
+        self.l6 = tk.Label(self, text="High Green Value",fg='Green',bg="gray19")
         self.l6.pack()
-        self.HighGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
+        self.HighGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray19",fg="White")
+        self.HighGreen.set(255)
         self.HighGreen.pack()
 
-    def parse_image(self,img):
+    def parse_image(self,img) -> ImageTk.PhotoImage:
         img2 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         im = Image.fromarray(img2)
         imgtk = ImageTk.PhotoImage(image=im)
         return imgtk
 
-    def callback(self,*args, **kwargs):
+    def callback(self,*args, **kwargs) -> None:
         lower, higher  = self.low(), self.high()
-        mask = cv2.inRange()
+        mask = cv2.inRange(self.img, lower,higher)
+        imgtk = self.parse_image(mask)
+        self.display.configure(image=imgtk)
+        self.display.image = imgtk
         pass
 
     def low(self) -> tuple:
