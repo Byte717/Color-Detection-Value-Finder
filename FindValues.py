@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import argparse
 from typing import *
 import tkinter as tk
-
+from PIL import Image, ImageTk
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -27,7 +27,14 @@ class Window(tk.Tk):
             raise
         else:
             self.dir = imageDir
-            self.img = cv2.imread(self.dir,1)
+            self.img = cv2.imread(self.dir)
+            cv2.imshow("DHJK",self.img)
+
+        imgtk = self.parse_image(self.img)
+        self.display = tk.Label(self, image=imgtk)
+        self.display.image = imgtk
+        self.display.pack(side=tk.TOP)
+
 
         self.l1 = tk.Label(self,text="Low Red Value", fg='Red')
         self.l1.pack()
@@ -60,9 +67,15 @@ class Window(tk.Tk):
         self.HighGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback)
         self.HighGreen.pack()
 
-    def callback(self):
-        lower, higher  = self.low(), self.high()
+    def parse_image(self,img):
+        img2 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        im = Image.fromarray(img2)
+        imgtk = ImageTk.PhotoImage(image=im)
+        return imgtk
 
+    def callback(self,*args, **kwargs):
+        lower, higher  = self.low(), self.high()
+        mask = cv2.inRange()
         pass
 
     def low(self) -> tuple:
@@ -77,7 +90,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("-dir", "--dir", help="Show Output")
     args = parser.parse_args()
-
+    print(args.dir)
     window = Window(args.dir)
     window.mainloop()
     return 0
