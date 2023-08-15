@@ -103,10 +103,10 @@ class Window(tk.Tk):
         self.bind('<Right>',self.rightPress)
 
     def MultipleInit(self) -> None:
-        self.leftButton = tk.Button(self, text="<-", width=10,height=5, bg="gray20",fg="White",command=self.leftPress)
+        self.leftButton = tk.Button(self, text="<-", width=10,height=5, bg="gray25",fg="White",command=self.leftPress)
         self.leftButton.pack(side=tk.LEFT)
 
-        self.rightButton = tk.Button(self, text="->", width=10, height=5, bg="gray20", fg="White",command=self.rightPress)
+        self.rightButton = tk.Button(self, text="->", width=10, height=5, bg="gray25", fg="White",command=self.rightPress)
         self.rightButton.pack(side=tk.RIGHT)
         pass
 
