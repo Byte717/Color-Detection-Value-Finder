@@ -5,6 +5,6 @@ If you want to do color detection in CV, then you need to decide a range of colo
 
 
 usage:
-"""
+```
 python FindValues.py -dir "/dir to images/or a file"
-"""
+```
