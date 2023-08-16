@@ -8,3 +8,8 @@ usage:
 ```
 python FindValues.py -dir "/dir to images/or a file"
 ```
+Or for use with webcam:
+
+```
+python FindValues.py -webcam
+```
