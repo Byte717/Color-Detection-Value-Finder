@@ -85,28 +85,29 @@ class Window(tk.Tk):
         self.HighRed.set(255)
         self.HighRed.grid(row=5,column=1)
 
+        self.l5 = tk.Label(self, text="Low Green Value",fg='lawn green',bg="gray19",font=self.Font_tuple2)
+        self.l5.grid(row=2,column=2)
+        self.LowGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
+        self.LowGreen.grid(row=3,column=2)
+
+        self.l6 = tk.Label(self, text="High Green Value",fg='lawn Green',bg="gray19",font=self.Font_tuple2)
+        self.l6.grid(row=4,column=2)
+        self.HighGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
+        self.HighGreen.set(255)
+        self.HighGreen.grid(row=5,column=2)
+
         self.l3 = tk.Label(self, text="Low Blue Value",fg='DodgerBlue',bg="gray19",font=self.Font_tuple2)
-        self.l3.grid(row=2,column=2)
+        self.l3.grid(row=2,column=3)
         self.LowBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
-        self.LowBlue.grid(row=3,column=2)
+        self.LowBlue.grid(row=3,column=3)
 
 
         self.l4 = tk.Label(self, text="High Blue Value",fg='DodgerBlue',bg="gray19",font=self.Font_tuple2)
-        self.l4.grid(row=4,column=2)
+        self.l4.grid(row=4,column=3)
         self.HighBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
         self.HighBlue.set(255)
-        self.HighBlue.grid(row=5,column=2)
+        self.HighBlue.grid(row=5,column=3)
 
-        self.l5 = tk.Label(self, text="Low Green Value",fg='lawn green',bg="gray19",font=self.Font_tuple2)
-        self.l5.grid(row=2,column=3)
-        self.LowGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
-        self.LowGreen.grid(row=3,column=3)
-
-        self.l6 = tk.Label(self, text="High Green Value",fg='lawn Green',bg="gray19",font=self.Font_tuple2)
-        self.l6.grid(row=4,column=3)
-        self.HighGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
-        self.HighGreen.set(255)
-        self.HighGreen.grid(row=5,column=3)
 
 
     def keyboardSetup(self):

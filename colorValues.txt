@@ -1,0 +1,5 @@
+Pink Cricket Ball:
+    - RGB  LOW (197,0,0)
+    - RGB HIGH(255,107,137)
+    Lower values BGR: (0, 0, 197)
+    Higher values BGR: (132, 107, 255)
