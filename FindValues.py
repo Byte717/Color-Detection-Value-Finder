@@ -2,8 +2,11 @@ import cv2
 import os
 import argparse
 import tkinter as tk
+
+import numpy as np
 from PIL import Image, ImageTk
 from tkinter import messagebox
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -16,13 +19,12 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 exit = False
-
+cam = None
 class Window(tk.Tk):
     def __init__(self, imageDir:str = None,webcam: bool = False) -> None:
         super().__init__()
-        self.webcam = webcam
         self.Font_tuple = ("Comic Sans MS", 20, "bold")
-        self.Font_tuple2 = ("Comic Sans MS", 10, "bold")
+        self.Font_tuple2 = ("Comic Sans MS", 12, "bold")
         self.title("RGB Value Tester")
         self.config(bg="gray19")
         self.protocol("WM_DELETE_WINDOW",self.onClose)
@@ -31,12 +33,12 @@ class Window(tk.Tk):
             print("Source not provided in arguments")
             raise
         elif webcam:
-            self.cam = cv2.VideoCapture(0)
-            self.img = self.cam.read()
-
+            # self.cam = cv2.VideoCapture(0)
+            self.img = np.zeros((200,400,3),dtype=np.uint8)
+            pass
         elif os.path.exists(imageDir) == False:
             print(bcolors.FAIL + bcolors.UNDERLINE + "INVALID PATH" + bcolors.ENDC)
-            exit()
+            raise
         else:
             self.dir = imageDir
             if os.path.isfile(imageDir):
@@ -113,6 +115,12 @@ class Window(tk.Tk):
         self.rightButton.pack(side=tk.RIGHT)
         pass
 
+
+    def changeCameraFrame(self):
+        parsed = self.parse_image(self.img)
+        self.original.configure(image=parsed)
+        self.original.image = parsed
+        self.callback()
     def changeImage(self, path = None):
         if path is None:
             print("NO PATH PROVIDED")
@@ -140,6 +148,7 @@ class Window(tk.Tk):
         else:
             self.imageIndex += 1
             self.changeImage(os.path.join(self.dir, self.paths[self.imageIndex]))
+
     def parse_image(self,img) -> ImageTk.PhotoImage:
         img2 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         im = Image.fromarray(img2)
@@ -172,22 +181,26 @@ class Window(tk.Tk):
 
 
 def main() -> int:
+    global cam
     parser = argparse.ArgumentParser()
     parser.add_argument("-dir", "--dir", help="Use images")
     parser.add_argument("-webcam","--webcam",help="Use webcam",action="store_true")
     args = parser.parse_args()
+    if args.webcam:
+        cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
     window = Window(args.dir,args.webcam)
 
     while not exit:
-        if window.webcam:
-            window.img = window.cam.read()
+        if args.webcam:
+            _,window.img = cam.read()
+            window.changeCameraFrame()
         window.update_idletasks()
         window.update()
     return 0
 
 
 if __name__ == '__main__':
-
     res : int = main()
     print("\n")
     print(bcolors.WARNING + "Code executed with exit code " + bcolors.ENDC, end='')
