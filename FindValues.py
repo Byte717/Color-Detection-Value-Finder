@@ -110,25 +110,25 @@ class Window(tk.Tk):
 
 
 
-    def keyboardSetup(self):
+    def keyboardSetup(self) -> None:
         self.bind('<Left>', self.leftPress)
         self.bind('<Right>',self.rightPress)
 
     def MultipleInit(self) -> None:
-        self.leftButton = tk.Button(self, text="<-", width=10,height=5, bg="gray25",fg="White",command=self.leftPress)
+        self.leftButton = tk.Button(self, text="<<--", width=10,height=5, bg="gray25",fg="White",command=self.leftPress)
         self.leftButton.grid(row= 3,column=0)
 
-        self.rightButton = tk.Button(self, text="->", width=10, height=5, bg="gray25", fg="White",command=self.rightPress)
+        self.rightButton = tk.Button(self, text="-->>", width=10, height=5, bg="gray25", fg="White",command=self.rightPress)
         self.rightButton.grid(row =3, column=4)
         pass
 
 
-    def changeCameraFrame(self):
+    def changeCameraFrame(self) -> None:
         parsed = self.parse_image(self.img)
         self.original.configure(image=parsed)
         self.original.image = parsed
         self.callback()
-    def changeImage(self, path = None, image = None):
+    def changeImage(self, path = None, image = None) -> None:
         if path is None:
             print("NO PATH PROVIDED")
             raise
@@ -144,7 +144,7 @@ class Window(tk.Tk):
             self.callback()
 
 
-    def leftPress(self,event=None):
+    def leftPress(self,event=None) -> None:
         if self.imageIndex == 0:
             return
         else:
@@ -152,7 +152,7 @@ class Window(tk.Tk):
             self.changeImage(self.dir, self.paths[self.imageIndex])
 
 
-    def rightPress(self, event=None):
+    def rightPress(self, event=None) -> None:
         if self.imageIndex + 1 == self.n:
             return
         else:
@@ -174,7 +174,7 @@ class Window(tk.Tk):
         pass
 
 
-    def onClose(self):
+    def onClose(self) -> None:
         global exit
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             print(f"Lower values BGR: {self.low()}")
