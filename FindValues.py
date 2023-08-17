@@ -2,7 +2,7 @@ import cv2
 import os
 import argparse
 import tkinter as tk
-
+from typing import Any
 import numpy as np
 from PIL import Image, ImageTk
 from tkinter import messagebox
@@ -75,38 +75,38 @@ class Window(tk.Tk):
 
 
         self.l1 = tk.Label(self,text="Low Red Value", fg='Red',bg="gray19",font=self.Font_tuple2)
-        self.l1.grid(row=2,column=1)
+        self.l1.grid(row=2,column=1,sticky="NS")
         self.LowRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
-        self.LowRed.grid(row =3,column=1)
+        self.LowRed.grid(row =3,column=1,sticky="NS")
 
         self.l2 = tk.Label(self, text="High Red Value",fg='Red',bg="gray19",font=self.Font_tuple2)
-        self.l2.grid(row=4,column=1)
+        self.l2.grid(row=4,column=1,sticky="NS")
         self.HighRed = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
         self.HighRed.set(255)
-        self.HighRed.grid(row=5,column=1)
+        self.HighRed.grid(row=5,column=1,sticky="NS")
 
         self.l5 = tk.Label(self, text="Low Green Value",fg='lawn green',bg="gray19",font=self.Font_tuple2)
-        self.l5.grid(row=2,column=2)
+        self.l5.grid(row=2,column=2,sticky="NSEW")
         self.LowGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
-        self.LowGreen.grid(row=3,column=2)
+        self.LowGreen.grid(row=3,column=2,sticky="NS")
 
         self.l6 = tk.Label(self, text="High Green Value",fg='lawn Green',bg="gray19",font=self.Font_tuple2)
-        self.l6.grid(row=4,column=2)
+        self.l6.grid(row=4,column=2,sticky="NSEW")
         self.HighGreen = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
         self.HighGreen.set(255)
-        self.HighGreen.grid(row=5,column=2)
+        self.HighGreen.grid(row=5,column=2,sticky="NS")
 
         self.l3 = tk.Label(self, text="Low Blue Value",fg='DodgerBlue',bg="gray19",font=self.Font_tuple2)
-        self.l3.grid(row=2,column=3)
+        self.l3.grid(row=2,column=3,sticky="NS")
         self.LowBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
-        self.LowBlue.grid(row=3,column=3)
+        self.LowBlue.grid(row=3,column=3,sticky="NS")
 
 
         self.l4 = tk.Label(self, text="High Blue Value",fg='DodgerBlue',bg="gray19",font=self.Font_tuple2)
-        self.l4.grid(row=4,column=3)
+        self.l4.grid(row=4,column=3,sticky="NS")
         self.HighBlue = tk.Scale(self, from_= 0, to=255, orient=tk.HORIZONTAL,command=self.callback, length=300,bg="gray35",fg="White")
         self.HighBlue.set(255)
-        self.HighBlue.grid(row=5,column=3)
+        self.HighBlue.grid(row=5,column=3,sticky="NS")
 
 
 
@@ -171,7 +171,7 @@ class Window(tk.Tk):
         imgtk = self.parse_image(mask)
         self.display.configure(image=imgtk)
         self.display.image = imgtk
-        pass
+        print(self.too_big(self.img))
 
 
     def onClose(self) -> None:
@@ -188,7 +188,20 @@ class Window(tk.Tk):
     def high(self) -> tuple:
         return (self.HighBlue.get(), self.HighGreen.get(), self.HighRed.get())
 
+    def too_big(self,img) -> bool:
+        currentHeight, currentWidth = self.winfo_height(), self.winfo_width()
+        imgHeight, imgWidth, _ = img.shape
+        if imgHeight > currentHeight or imgWidth > currentWidth:
+            return True
+        else:
+            if imgHeight > 0.4 * currentHeight or imgWidth > 0.4 * currentWidth:
+                return True
 
+        return False
+
+    def resize_to_Scale(self) -> Any:
+
+        pass
 
 def main() -> int:
     global cam
